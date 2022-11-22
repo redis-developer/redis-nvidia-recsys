@@ -1,0 +1,88 @@
+version: '3.7'
+services:
+  merlin:
+    image: "nvcr.io/nvidia/merlin/merlin-hugectr:22.10"
+    privileged: true
+    command: ["jupyter", "lab", "--no-browser", "--allow-root", "--ip", "0.0.0.0", "--port", "8888"]
+    ports:
+      - 8888:8888
+      - 8000:8000
+      - 8001:8001
+      - 8002:8002
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      REDIS_NODE_1: redis-node-1:6373
+      REDIS_NODE_2: redis-node-2:6374
+      REDIS_NODE_3: redis-node-3:6375
+    volumes:
+      - '../data:/model-data/'
+      - './:/workdir'
+    working_dir: /workdir
+    networks:
+      app_subnet:
+        ipv4_address: 172.20.0.10
+    depends_on:
+      - redis-cluster
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: "nvidia"
+              capabilities: ["gpu"]
+              count: 1
+
+  redis-cluster:
+      image: 'redis:7.0-alpine'
+      command: redis-cli --cluster create 172.20.0.31:6373 172.20.0.32:6374 172.20.0.33:6375 --cluster-yes
+      networks:
+        app_subnet:
+          ipv4_address: 172.20.0.30
+      depends_on:
+        - redis-node-1
+        - redis-node-2
+        - redis-node-3
+  redis-node-1:
+      image: 'redis:7.0-alpine'
+      command: redis-server /usr/local/etc/redis/redis.conf
+      ports:
+        - '6373:6373'
+      volumes:
+        - redis-node-1-data:/var/lib/redis
+        - ./redis-confs/redis-1.conf:/usr/local/etc/redis/redis.conf
+      networks:
+        app_subnet:
+          ipv4_address: 172.20.0.31
+  redis-node-2:
+      image: 'redis:7.0-alpine'
+      command: redis-server /usr/local/etc/redis/redis.conf
+      ports:
+        - '6374:6374'
+      volumes:
+        - redis-node-2-data:/var/lib/redis
+        - ./redis-confs/redis-2.conf:/usr/local/etc/redis/redis.conf
+      networks:
+        app_subnet:
+          ipv4_address: 172.20.0.32
+  redis-node-3:
+      image: 'redis:7.0-alpine'
+      command: redis-server /usr/local/etc/redis/redis.conf
+      ports:
+        - '6375:6375'
+      volumes:
+        - redis-node-3-data:/var/lib/redis
+        - ./redis-confs/redis-3.conf:/usr/local/etc/redis/redis.conf
+      networks:
+        app_subnet:
+          ipv4_address: 172.20.0.33
+
+volumes:
+  merlin:
+  redis-node-1-data:
+  redis-node-2-data:
+  redis-node-3-data:
+networks:
+  app_subnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
