@@ -1,0 +1,5 @@
+faiss-gpu
+feast[redis]
+jupyterlab
+protobuf<=3.20
+seedir
