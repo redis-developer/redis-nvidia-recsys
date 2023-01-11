@@ -1,0 +1,2 @@
+jupyterlab==3.5.2
+redis==4.4.2

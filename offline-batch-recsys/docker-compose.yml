@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+
+  offline-recsys-training:
+    container_name: offline-recsys-training
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    privileged: true
+    ports:
+      - 8888:8888
+    volumes:
+      - ./:/workdir
+    depends_on:
+      - redis-inference-store
+
+  redis-inference-store:
+      image: redis/redis-stack-server:latest
+      ports:
+        - '6379:6379'
+
