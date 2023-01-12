@@ -43,3 +43,22 @@ The container will open a shell when the run command execution is completed. You
 3. Open any browser to access the jupyter-lab server using `localhost:8888`.
 
 4. Once in the server, navigate to the ```/Merlin/examples/Building-and-deploying-multi-stage-RecSys/``` directory and execute the example notebooks.
+
+
+Stages:
+1. Batch offline recsys
+2. Online Recsys
+3. Large-Scale Online recsys
+
+## TODO
+
+Offline Batch Recsys TODO:
+   - Include the ranking DLRM model in the first notebook
+   - Update recommendations to use ranking model
+   - General cleanup
+
+Online Recsys TODO:
+Stage 02 -- (notebook 1) Setup FS + Redis VSS (given pre created data files)
+Stage 02 -- (notebook 2) Define Ensemble + Triton Deployment + Testing
+Stage 03 -- (notebook 1) Tidy up descriptions and HugeCTR deployment images
+Stage 03 -- (notebook 1) Save model and data in S3
