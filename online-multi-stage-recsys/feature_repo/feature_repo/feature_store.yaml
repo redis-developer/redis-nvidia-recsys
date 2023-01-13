@@ -1,3 +1,4 @@
+
 project: merlin_feature_store
 registry: data/registry.db
 provider: local
