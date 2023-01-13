@@ -1,9 +1,8 @@
 version: '3.7'
 services:
-  merlin:
+  online-recsys:
     image: "nvcr.io/nvidia/merlin/merlin-tensorflow:22.11"
     privileged: true
-    #command: ["echo", "FUCKKK"]
     command: ["pip install -r requirements.txt && jupyter lab --no-browser --ip=0.0.0.0 --allow-root --port=8888"]
     entrypoint: ["/bin/sh", "-c"]
     ports:
@@ -32,19 +31,17 @@ services:
               count: 1
 
   redis-feature-store:
-      image: 'redis:7.0-alpine'
-      command: redis-server /usr/local/etc/redis/redis.conf
+      image: redis/redis-stack:latest
       ports:
-        - '6379:6379'
+        - 6379:6379
       volumes:
         - redis-feature-store:/var/lib/redis
-        - ./redis-conf/redis.conf:/usr/local/etc/redis/redis.conf
       networks:
         app_subnet:
           ipv4_address: 172.20.0.20
 
 volumes:
-  merlin:
+  online-recsys:
   redis-feature-store:
 networks:
   app_subnet:

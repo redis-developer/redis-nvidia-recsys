@@ -3,3 +3,5 @@ feast[redis]
 jupyterlab
 protobuf<=3.20
 seedir
+jupyterlab==3.5.2
+redis==4.4.2
