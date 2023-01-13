@@ -10,7 +10,9 @@ RUN apt-get update \
     && echo "Installing curl" \
     && apt-get install -y curl \
     && echo "Installing Redis" \
-    && apt-get install -y redis
+    && apt-get install -y redis \
+    && apt install -y redis-tools \
+    && apt install -y tree
 
 # Define this parameter to install jupyter lab
 ENV JUPYTER_ENABLE_LAB=yes
