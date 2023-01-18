@@ -1,0 +1,8 @@
+project: merlin_feature_store
+registry: data/registry.db
+provider: local
+online_store:
+  type: redis
+  redis_type: redis
+  connection_string: "172.20.0.20:6379"
+entity_key_serialization_version: 2
