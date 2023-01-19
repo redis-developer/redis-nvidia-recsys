@@ -1,18 +1,80 @@
 name: "0-query-user-features"
 backend: "python"
-max_batch_size: 256
-input [
-{
-    name: "input__0"
-    data_type: TYPE_INT32
-    dims: [ 1 ]
+input {
+  name: "user_id_raw"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
 }
-]
-output [
-{
-    name: "output__0"
-    data_type: TYPE_INT32
-    dims: [ 12 ]
+output {
+  name: "user_shops"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
 }
-]
-instance_group [{ kind: KIND_GPU }]
+output {
+  name: "user_profile"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "user_group"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "user_gender"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "user_age"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "user_consumption_2"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "user_is_occupied"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "user_geography"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "user_intentions"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "user_brands"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "user_categories"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "user_id"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}

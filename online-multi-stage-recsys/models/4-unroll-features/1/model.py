@@ -36,8 +36,21 @@ class TritonPythonModel:
         self.output_names = [output["name"] for output in self.model_config["output"]]
         self.input_names = [inp["name"] for inp in self.model_config["input"]]
         
-        # Load feature store components
         self.item_id_col = "item_id"
+        self.unroll_col_names = [
+            "user_id",
+            "user_shops",
+            "user_profile",
+            "user_group",
+            "user_gender",
+            "user_age",
+            "user_consumption_2",
+            "user_is_occupied",
+            "user_geography",
+            "user_intentions",
+            "user_brands",
+            "user_categories",
+        ]
 
     def execute(self, requests):
         """`execute` MUST be implemented in every Python model. `execute`
@@ -75,9 +88,9 @@ class TritonPythonModel:
             output_tensors = []
             
             for col_name, col_value in input_df.items():
-                if col_name in self._unroll_col_names:
+                if col_name in self.unroll_col_names:
                     # Unroll user features to match dimensionality of item features
-                    col_value = np.repeat(col_value, num_items, axis=0)
+                    col_value = np.repeat(col_value, num_items, axis=0).reshape(-1, 1)
                 
                 out_tensor = pb_utils.Tensor(col_name, col_value)
                 output_tensors.append(out_tensor)

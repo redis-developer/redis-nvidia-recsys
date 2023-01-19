@@ -12,3 +12,9 @@ output {
   dims: -1
   dims: 1
 }
+parameters {
+  key: "vector_db_config"
+  value {
+    string_value: "{\"index_name\": \"candidate_index\", \"vector_field_name\": \"item_embedding\", \"topk\": \"64\"}"
+  }
+}

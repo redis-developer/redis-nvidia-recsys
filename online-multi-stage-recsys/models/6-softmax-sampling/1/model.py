@@ -3,7 +3,6 @@ import json
 import logging
 import sys
 
-import feast as fs
 import numpy as np
 import triton_python_backend_utils as pb_utils
 
@@ -36,17 +35,16 @@ class TritonPythonModel:
         self.model_config = model_config = json.loads(args['model_config'])
         self.output_names = [output["name"] for output in self.model_config["output"]]
         self.input_names = [inp["name"] for inp in self.model_config["input"]]
+        self.params = self.model_config["parameters"]
         
-        # Load feature store components
-        logging.info("Loading feature store")
-        self.store = fs.FeatureStore(repo_path="/workdir/feature_repo")
-        self.feature_view_name = "user_features"
-        self.entity_column = "user_id_raw"
-        self.feature_view = self.store.get_feature_view(self.feature_view_name)
-        self.entity_id = self.feature_view.entities[0]
-        self.features = [feature.name for feature in self.feature_view.features]
-        self.num_features = len(self.features)
+        # Load variables
+        self.input_col_name = "item_id_raw"
+        self.relevance_col_name = "click/binary_classification_task"
+        self.temperature = 10.0
+        softmax_config = json.loads(self.params["softmax_config"]["string_value"])
+        self.topk = int(softmax_config["topk"])
 
+    
     def execute(self, requests):
         """`execute` MUST be implemented in every Python model. `execute`
         function receives a list of pb_utils.InferenceRequest as the only
@@ -66,12 +64,9 @@ class TritonPythonModel:
           A list of pb_utils.InferenceResponse. The length of this list must
           be the same as `requests`
         """
+        
         responses = []
         
-        feature_refs = [
-            ":".join([self.feature_view_name, feature_name]) for feature_name in self.features
-        ]
-
         # Every Python backend must iterate over everyone of the requests
         # and create a pb_utils.InferenceResponse for each of them.
         for request in requests:
@@ -81,30 +76,27 @@ class TritonPythonModel:
                 for name in self.input_names
             }
             input_df = DictArray(input_tensor)
-            entity_ids = input_df[self.entity_column]
-            if len(entity_ids) < 1:
-                raise ValueError(
-                    "No entity ids provided when querying Feast. Must provide "
-                    "at least one id in order to fetch features."
-                )
-            entity_rows = [{self.entity_id: int(entity_id)} for entity_id in entity_ids]
-
-            # Query Feast
-            feast_response = self.store.get_online_features(
-                features=feature_refs,
-                entity_rows=entity_rows,
-            ).to_dict()
-                        
-            # Loop through features to create separate output tensors
-            output_tensors = []
-            for output_name in self.output_names:
-                feature_value = feast_response[output_name]
-                feature_array = np.array(feature_value).T.astype(np.int32).reshape(-1, 1)
-                out_tensor = pb_utils.Tensor(output_name, feature_array)
-                output_tensors.append(out_tensor)
             
+            # Softmax Sampling Algorithm
+            # https://github.com/NVIDIA-Merlin/systems/blob/5c6b8f3f02018c5eba302c1fcb11b6971d012036/merlin/systems/dag/ops/softmax_sampling.py
+            candidate_ids = input_df[self.input_col_name].reshape(-1)
+            predicted_scores = input_df[self.relevance_col_name].reshape(-1)
+            weights = np.exp(self.temperature * predicted_scores) / np.sum(predicted_scores)
+            
+            num_items = candidate_ids.shape[0]
+            exponentials = -np.log(np.random.uniform(0, 1, size=(num_items,)))
+            exponentials /= weights
+            
+            # Produce the final ordered list of recs
+            sorted_indices = np.argsort(exponentials)
+            topk_item_ids = candidate_ids[sorted_indices][: self.topk]
+            ordered_item_ids = topk_item_ids.reshape(1, -1).T
+
+            # Output tensor    
+            out_tensor = pb_utils.Tensor(self.output_names[0], ordered_item_ids)
+
             # Create InferenceResponse and append to responses
-            inference_response = pb_utils.InferenceResponse(output_tensors)
+            inference_response = pb_utils.InferenceResponse([out_tensor])
             responses.append(inference_response)
 
         # Return a list of pb_utils.InferenceResponse

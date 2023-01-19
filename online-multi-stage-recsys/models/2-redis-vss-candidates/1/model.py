@@ -8,6 +8,8 @@ import redis
 import numpy as np
 import triton_python_backend_utils as pb_utils
 
+from redis.commands.search.query import Query
+
 
 class TritonPythonModel:
     """Your Python model must use the same class name. Every Python model
@@ -41,7 +43,7 @@ class TritonPythonModel:
         logging.info("Loading RediSearch Client")
         host, port = os.environ["FEATURE_STORE_ADDRESS"].split(":")
         self.redis_conn = redis.Redis(host=host, port=port)
-        self.vector_db_config = json.loads(params["vector_db_config"]["string_value"])
+        self.vector_db_config = json.loads(self.params["vector_db_config"]["string_value"])
         self.index_name = self.vector_db_config["index_name"]
         self.vector_field_name = self.vector_db_config["vector_field_name"]
         self.topk = int(self.vector_db_config["topk"])
@@ -80,12 +82,13 @@ class TritonPythonModel:
                 .paging(0, self.topk)\
                 .no_content()\
                 .dialect(2)
-            res = redis_conn.ft(self.index_name).search(query, query_params={"vec_param": query_embedding.asbytes()})
-            topk_ids = [doc.id for doc in res.docs]
+            print(query_embedding, flush=True)
+            res = self.redis_conn.ft(self.index_name).search(query, query_params={"vec_param": query_embedding.tobytes()})
+            topk_ids = [doc.id.split(":")[1] for doc in res.docs]
                         
             # Create output tensor
             output_name = self.output_names[0]
-            candidate_ids = np.array(ids).T.astype(np.int32)
+            candidate_ids = np.array(topk_ids).T.astype(np.int32).reshape(-1, 1)
             out_tensor = pb_utils.Tensor(output_name, candidate_ids)
             
             # Create InferenceResponse and append to responses

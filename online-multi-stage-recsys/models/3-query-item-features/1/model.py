@@ -43,7 +43,7 @@ class TritonPythonModel:
         self.feature_view_name = "item_features"
         self.entity_column = "candidate_ids"
         self.feature_view = self.store.get_feature_view(self.feature_view_name)
-        self.entity_id = view.entities[0]
+        self.entity_id = self.feature_view.entities[0]
         self.features = [feature.name for feature in self.feature_view.features]
         self.num_features = len(self.features)
 
@@ -101,7 +101,7 @@ class TritonPythonModel:
             output_tensors.append(pb_utils.Tensor(self.entity_id, entity_ids)) # TODO might be a shape issue here...
             for output_name in self.output_names:
                 feature_value = feast_response[output_name]
-                feature_array = feature_value.to_numpy().T.astype(np.int32)
+                feature_array = np.array(feature_value).T.astype(np.int32).reshape(-1, 1)
                 out_tensor = pb_utils.Tensor(output_name, feature_array)
                 output_tensors.append(out_tensor)
             
