@@ -12,6 +12,7 @@ services:
     ports:
       - 8888:8888
     volumes:
+      - '../data:/model-data/'
       - ./:/workdir
     depends_on:
       - redis-inference-store
