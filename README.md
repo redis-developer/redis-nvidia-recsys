@@ -49,7 +49,7 @@ $ docker compose up # -d to daemonize
 
 ### [3. Large-Scale Recommendation Systems with HugeCTR](./large-scale-recsys/)
 
-![](./assets/OnlineMultiStageRecsys.png)
+![](./assets/LargeScaleRecsysHugeCTR.png)
 
 The last notebook that shows how to handle very large datasets when training models like DLRM for recommendation systems. Large enterprises often have millions of users and items. The entire embedding table of a model may not fit on a single GPU. For this, NVIDIA created the HugeCTR framework.
 
