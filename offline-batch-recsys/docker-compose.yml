@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  offline-recsys-training:
+    container_name: offline-recsys-training
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    privileged: true
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+    ports:
+      - 8888:8888
+    volumes:
+      - '../data:/model-data/'
+      - ./:/workdir
+    depends_on:
+      - redis-inference-store
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: "nvidia"
+              capabilities: ["gpu"]
+              count: 1
+  redis-inference-store:
+      image: redis/redis-stack:latest
+      ports:
+        - '6379:6379'
+

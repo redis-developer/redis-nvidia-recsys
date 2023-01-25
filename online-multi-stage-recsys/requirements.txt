@@ -1,0 +1,6 @@
+faiss-gpu
+feast[redis]==0.28.0
+seedir==0.4.0
+jupyterlab==3.5.2
+redis==4.4.2
+protobuf==3.20

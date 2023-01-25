@@ -1,0 +1,20 @@
+name: "2-redis-vss-candidates"
+backend: "python"
+input {
+  name: "output_1"
+  data_type: TYPE_FP32
+  dims: -1
+  dims: 64
+}
+output {
+  name: "candidate_ids"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+parameters {
+  key: "vector_db_config"
+  value {
+    string_value: "{\"index_name\": \"candidate_index\", \"vector_field_name\": \"item_embedding\", \"topk\": \"64\"}"
+  }
+}

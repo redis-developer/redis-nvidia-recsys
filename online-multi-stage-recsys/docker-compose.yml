@@ -1,0 +1,51 @@
+version: '3.7'
+services:
+  online-recsys:
+    image: "nvcr.io/nvidia/merlin/merlin-tensorflow:22.11"
+    privileged: true
+    command: ["pip install -r requirements.txt && jupyter lab --no-browser --ip=0.0.0.0 --allow-root --port=8888"]
+    entrypoint: ["/bin/sh", "-c"]
+    ports:
+      - 8888:8888
+      - 8000:8000
+      - 8001:8001
+      - 8002:8002
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      FEATURE_STORE_ADDRESS: "172.20.0.20:6379"
+    volumes:
+      - '../data:/model-data/'
+      - './:/workdir'
+    working_dir: /workdir
+    depends_on:
+      - redis-feature-store
+    networks:
+      app_subnet:
+        ipv4_address: 172.20.0.10
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: "nvidia"
+              capabilities: ["gpu"]
+              count: 1
+
+  redis-feature-store:
+      image: redis/redis-stack:latest
+      ports:
+        - 6379:6379
+      volumes:
+        - redis-feature-store:/var/lib/redis
+      networks:
+        app_subnet:
+          ipv4_address: 172.20.0.20
+
+volumes:
+  online-recsys:
+  redis-feature-store:
+networks:
+  app_subnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
