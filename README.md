@@ -22,10 +22,10 @@ The [offline notebook](./offline-batch-recsys/Offline-Batch-Recommender-System.i
 this type of recommendation system as well as trains and exports the models necessary for running the online
 recommendation system in the following section.
 
-> NOTE: You can also just download pre-trained assets as follows
+> NOTE: You can also just download pre-trained assets with the AWS CLI as follows
 
 ```
-wget <put in url>
+aws s3 cp s3://redisventures/merlin/merlin-recsys-data.zip ./data
 ```
 
 To execute the notebook, run the following
@@ -68,10 +68,10 @@ TODO: Put in instructions to run the cloud deployment one.
 
 ### Pre-trained Models
 
-The models in this tutorial can be retrieved by running
+The models in this tutorial can be retrieved with the aws cli by running
 
 ```
-wget <put in link>
+aws s3 cp s3://redisventures/merlin/merlin-recsys-data.zip ./data
 ```
 
 ### Repositories
