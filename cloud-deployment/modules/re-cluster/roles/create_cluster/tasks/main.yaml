@@ -1,0 +1,116 @@
+---
+# This task is to setup/config Redis Enterprise via the REST API.
+#
+
+- name: setting master host as the first host in the inventory
+  set_fact:
+    master_host: "{{ groups['all'][0] }}"
+    rack_awareness: "{{ hostvars[inventory_hostname].rack_id is defined }}"
+
+- name: setting the rack id
+  set_fact:
+    rack_id: "{{ hostvars[inventory_hostname].rack_id }}"
+  when: hostvars[inventory_hostname].rack_id is defined
+
+- name: setting internal IP to {{ inventory_hostname }}
+  set_fact:
+    internal_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+  when: internal_ip is not defined
+  
+- name: setting external IP to {{ internal_ip }}
+  set_fact:
+    external_ip: "{{ internal_ip }}"
+  when: external_ip is not defined
+  
+- name: setting master internal IP to specified internal IP
+  set_fact:
+    master_ip: "{{ hostvars[master_host].internal_ip }}"
+  when: hostvars[master_host].internal_ip is defined
+  
+- name: setting master internal IP to {{ inventory_hostname }}
+  set_fact:
+    master_ip: "{{ master_host }}"
+  when: hostvars[master_host].internal_ip is not defined
+
+- name: setting facts
+  set_fact:
+    bootstrap_url: "https://{{ internal_ip }}:9443/v1/bootstrap"
+    create_url: "https://{{ internal_ip }}:9443/v1/bootstrap/create_cluster"
+    join_url: "https://{{ internal_ip }}:9443/v1/bootstrap/join_cluster"
+
+- name: setting the am I the master flag
+  set_fact:
+    i_am_the_master: "{{ master_ip == internal_ip }}"
+
+# Check bootstrapped
+- name: check to see if this node is in the cluster
+  uri:
+    url: "{{ bootstrap_url }}"
+    method: GET
+    user: "{{ username }}"
+    password: "{{ password }}"
+    force_basic_auth: yes
+    return_content: yes
+    validate_certs: no
+    follow_redirects: all
+  register: bootstap_request
+
+- name: is this node cluster joined?
+  set_fact:
+    cluster_joined: "{{ bootstap_request is defined and bootstap_request.json.bootstrap_status.state == 'completed' }}"
+
+- name: is the cluster rack aware
+  debug:
+    msg: 'Creating a cluster with rack awareness...'
+  when:
+    - rack_awareness
+
+- name: Creating Cluster for RedisLabs via REST API
+  uri:
+    url: "{{ create_url }}"
+    method: POST
+    user: "{{ username }}"
+    password: "{{ password }}"
+    force_basic_auth: yes
+    return_content: yes
+    validate_certs: no
+    follow_redirects: all
+    body: "{{ lookup('template','create_cluster.json.j2') }}"
+    body_format: json
+  when:
+    - i_am_the_master
+    - not cluster_joined
+
+
+- name: Join Cluster for RedisLabs via REST API
+  uri:
+    url: "{{ join_url }}"
+    method: POST
+    user: "{{ username }}"
+    password: "{{ password }}"
+    force_basic_auth: yes
+    return_content: yes
+    validate_certs: no
+    follow_redirects: all
+    body: "{{ lookup('template','join_cluster.json.j2') }}"
+    body_format: json
+  when:
+    - not i_am_the_master
+    - not cluster_joined
+
+- name: checking to see if we've completed bootstrapping
+  uri:
+    url: "{{ bootstrap_url }}"
+    method: GET
+    user: "{{ username }}"
+    password: "{{ password }}"
+    force_basic_auth: yes
+    return_content: yes
+    validate_certs: no
+    follow_redirects: all
+  register: bootstrap_status
+  until: bootstrap_status.json.bootstrap_status.state == 'completed'
+  delay: 10 
+  retries: 10
+  when:
+    - not cluster_joined

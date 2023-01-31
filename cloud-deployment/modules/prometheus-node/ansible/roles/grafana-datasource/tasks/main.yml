@@ -1,0 +1,13 @@
+---
+- name: Create prometheus datasource
+  grafana_datasource:
+    name: "{{ item.name }}"
+    grafana_url: "{{ grafana_url }}"
+    grafana_user: "{{ grafana_user }}"
+    grafana_password: "{{ grafana_password }}"
+    ds_type: "{{ item.ds_type }}"
+    ds_url: "{{ item.ds_url }}"
+    database: "{{ item.name }}"
+    tls_skip_verify: "{{item.tls_skip_verify}}"
+    state: present
+  with_items: "{{ data_source }}"

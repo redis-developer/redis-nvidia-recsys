@@ -1,0 +1,22 @@
+---
+
+deb_packages:
+  - jq
+  - tree
+  - sysstat
+  - iputils-ping
+  - libcap2-bin 
+  - build-essential
+  - autoconf
+  - automake
+  - libbsd-dev
+  - libltdl-dev
+  - libltdl7
+  - libtool
+  - libevent-openssl-2.1-6
+  - libpcre3-dev 
+  - libevent-dev
+  - pkg-config
+  - zlib1g-dev
+  - libssl-dev
+  - ntp

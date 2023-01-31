@@ -1,0 +1,35 @@
+{
+  "action": "join_cluster",
+  "cluster": {
+    "nodes": [
+     "{{ master_ip }}"
+    ],
+    "name": "{{ cluster_name }}",
+    "clobber": true
+  },
+  "node": {
+  {% if flash_enabled %}
+    "bigstore_driver": "rocksdb",
+  {% endif %}
+    "paths": {
+    {% if flash_enabled %}
+      "bigstore_path": "{{ flash_path }}",
+    {% endif %}
+      "persistent_path": "{{ persistent_path }}",
+      "ephemeral_path": "{{ ephemeral_path }}"
+    },
+    "identity": {
+      {% if rack_awareness %}
+        "rack_id" : "{{ rack_id }}",
+      {% endif %}
+      "addr": "{{ internal_ip }}",
+      "external_addr": [
+        "{{ external_ip }}"
+      ]
+    }
+  },
+  "credentials": {
+    "username": "{{ username }}",
+    "password": "{{ password }}"
+  }
+}

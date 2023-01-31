@@ -1,0 +1,5 @@
+---
+- name: Add data source to grafana
+  hosts: localhost
+  roles:
+    - grafana-datasource
