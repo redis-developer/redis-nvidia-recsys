@@ -1,10 +1,10 @@
 #### User Input Required
 #### Enter your user variables here
-#### Some variables have default values and if you do not specify 
+#### Some variables have default values and if you do not specify
 
 #### User Input Required
 #### Access key and Secret key for aws account [AWS_ACCESS_KEY, AWS_SECRET_KEY]
-#### (fake example: aws_creds = ["myAccesssKeyxjdklfdakf","MySecretKeyxkldkfhadjkfh"]) 
+#### (fake example: aws_creds = ["myAccesssKeyxjdklfdakf","MySecretKeyxkldkfhadjkfh"])
 aws_creds =
 
 #### User Input Required
@@ -21,7 +21,7 @@ ssh_key_path =
 
 #### User Input Required
 #### DNS hosted zone id (find value in R53 hosted zones)
-### navigate to Route 53 in the AWS console, click hosted zones, 
+### navigate to Route 53 in the AWS console, click hosted zones,
 ### find hosted zone "domain name" of interest, use its "hosted zone ID" (fake example: dns_hosted_zone_id="Z903232kljadfdk")
 dns_hosted_zone_id =
 
@@ -33,7 +33,7 @@ owner = "redisuser"
 #### example: region = "us-west-2"
 region = "us-west-2"
 
-#### Base Name of Resources 
+#### Base Name of Resources
 #### (Resource prefix for all generated resources)
 #### default = "redisuser1-tf"
 base_name = "redis-tf"
@@ -43,24 +43,26 @@ base_name = "redis-tf"
 #### example: vpc_cidr = ""10.0.0.0/16""
 vpc_cidr = "10.0.0.0/16"
 
-#### Subnet CIDR Block 
+#### Subnet CIDR Block
 #### example: subnet_cidr_blocks = ["10.0.0.0/24","10.0.16.0/24","10.0.32.0/24"]
 subnet_cidr_blocks = ["10.0.0.0/24","10.0.16.0/24","10.0.32.0/24"]
 
-#### Subnet AZ 
+#### Subnet AZ
 #### example: subnet_azs = ["us-west-2a","us-west-2b","us-west-2c"]
 subnet_azs = ["us-west-2a","us-west-2b","us-west-2c"]
 
-############### Test Instance Variables
+############### Triton Instance Variables
 
-#### instance type to use for test node with redis and memtier installed on it
-#### example: test_instance_type = "t3.micro"
-test_instance_type = "t3.micro"
+#### instance type to use for GPU triton node
+#### example: triton_instance_type = "g4dn.xlarge"
+triton_instance_type = "g4dn.xlarge"
 
-#### how many test nodes
-#### If you want a Tester node configured with redis and memtier, say 1 or greater, else say 0
-#### example: test-node-count = 1
-test-node-count = 1
+#### example: triton-node-count = 1
+triton-node-count = 1
+
+#### AMI for triton
+triton_ami = "ami-0b61d2979f583d63d"
+
 
 ############## Redis Enterprise Nodes Variables
 
