@@ -1,10 +1,10 @@
 # Recommendation Systems with NVIDIA Merlin and Redis
 
-This repository holds the assets that supplement the article "Offline to Online: Feature Storage for Real-time Recommendation Systems with NVIDIA Merlin" written originally for the NVIDIA Developer Blog.
+🚀 This repository holds the assets that supplement the article "*Offline to Online: Feature Storage for Real-time Recommendation Systems with NVIDIA Merlin*" written originally for the [NVIDIA Developer Blog](https://developer.nvidia.com/blog/).
 
 ## Recommendation System Architectures
 
-We provide examples of recommendation system architectures and provide cloud deployment instructions for production usage. Each of the examples rely on Redis and the NVIDIA Merlin framework which provides a number of building blocks for creating recommendation systems.
+We provide examples of recommendation system architectures and provide cloud deployment instructions for production usage. Each of the examples rely on **Redis** and the **NVIDIA Merlin** framework which provides a number of building blocks for creating recommendation systems.
 
 There are 3 examples within this repository
 1. [Offline Batch Recommendations](./offline-batch-recsys/)
@@ -34,6 +34,7 @@ recommendation system in the following section.
 To execute the notebook, run the following
 
 ```bash
+$ cd offline-batch-recsys/
 $ docker compose up # -d to daemonize
 ```
 
@@ -54,6 +55,7 @@ aws s3 cp s3://redisventures/merlin/merlin-recsys-data.zip ./data
 To execute the notebook, run the following
 
 ```bash
+$ cd online-multi-stage-recsys/
 $ docker compose up # -d to daemonize
 ```
 
@@ -74,6 +76,7 @@ HugeCTR is a part of a NVIDIA Merlin framework and adds facilities for distribut
 To execute the local notebook, run the following
 
 ```bash
+$ cd large-scale-recsys/
 $ docker compose up # -d to daemonize
 ```
 
