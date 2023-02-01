@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+  merlin:
+    image: "nvcr.io/nvidia/merlin/merlin-hugectr:22.10"
+    privileged: true
+    command: ["jupyter", "lab", "--no-browser", "--allow-root", "--ip", "0.0.0.0", "--port", "8888"]
+    ports:
+      - 8888:8888
+      - 8000:8000
+      - 8001:8001
+      - 8002:8002
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+    volumes:
+      - '../data:/model-data/'
+      - './:/workdir'
+    working_dir: /workdir
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: "nvidia"
+              capabilities: ["gpu"]
+              count: 1

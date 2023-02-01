@@ -1,0 +1,71 @@
+---
+
+- hosts: all
+  become: yes
+  become_user: root
+  become_method: sudo
+  gather_facts: yes
+
+  vars:
+    deb_packages:
+      - build-essential
+      - autoconf
+      - automake
+      - libbsd-dev
+      - libltdl-dev
+      - libltdl7
+      - libtool
+      - libevent-openssl-2.1-6
+      - libpcre3-dev 
+      - libevent-dev
+      - pkg-config
+      - zlib1g-dev
+      - libssl-dev
+      - nginx
+      - docker-compose
+
+  pre_tasks:
+    - name: Update Apt Cache
+      apt: update_cache=yes 
+      when: ansible_os_family == "Debian"
+    - name: Ubuntu Packages
+      package:
+        name: "{{ deb_packages }}"
+    - name: Set to Realistic Hostname
+      hostname:
+        name: "prometheus"
+    - name: Setup Hostsfile
+      lineinfile:
+        dest: /etc/hosts
+        regexp: '^127\.0\.0\.1[ \t]+localhost'
+        line: "127.0.0.1 localhost prometheus"
+        state: present
+
+
+  tasks:
+    - name: load vars
+      include_vars: default.yaml
+
+
+# Prepare Node for Prometheus & Grafana
+    - name: make prometheus directory
+      file:
+        path: /home/ubuntu/prometheus
+        state: directory
+
+    - name: copy prometheus yml
+      copy:
+        src: /tmp/prometheus.yml
+        dest: /home/ubuntu/prometheus/prometheus.yml
+
+    - name: copy docker compose yml
+      copy:
+        src: /tmp/docker-compose.yml
+        dest: /home/ubuntu/docker-compose.yml
+
+
+    - name: docker-compose up
+      command: docker-compose up -d
+      args:
+        chdir: /home/ubuntu/
+

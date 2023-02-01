@@ -10,6 +10,7 @@ services:
       - 8000:8000
       - 8001:8001
       - 8002:8002
+    shm_size: '512mb'
     environment:
       NVIDIA_VISIBLE_DEVICES: all
       FEATURE_STORE_ADDRESS: "172.20.0.20:6379"

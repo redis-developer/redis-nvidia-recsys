@@ -82,7 +82,7 @@ class TritonPythonModel:
                 .paging(0, self.topk)\
                 .no_content()\
                 .dialect(2)
-            print(query_embedding, flush=True)
+
             res = self.redis_conn.ft(self.index_name).search(query, query_params={"vec_param": query_embedding.tobytes()})
             topk_ids = [doc.id.split(":")[1] for doc in res.docs]
                         

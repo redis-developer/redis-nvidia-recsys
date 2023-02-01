@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  online-recsys:
+    image: "nvcr.io/nvidia/merlin/merlin-tensorflow:22.11"
+    privileged: true
+    command: ["pip install -r requirements.txt && jupyter lab --no-browser --ip=0.0.0.0 --allow-root --port=8888"]
+    entrypoint: ["/bin/sh", "-c"]
+    ports:
+      - 8888:8888
+      - 8000:8000
+      - 8001:8001
+      - 8002:8002
+    shm_size: '5G'
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      FEATURE_STORE_ADDRESS: "50.18.102.210:10657"
+    volumes:
+      - '../data:/model-data/'
+      - './:/workdir'
+    working_dir: /workdir
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: "nvidia"
+              capabilities: ["gpu"]
+              count: 1
+
+
+volumes:
+  online-recsys:

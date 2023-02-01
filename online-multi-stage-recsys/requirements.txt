@@ -1,4 +1,3 @@
-faiss-gpu
 feast[redis]==0.28.0
 seedir==0.4.0
 jupyterlab==3.5.2

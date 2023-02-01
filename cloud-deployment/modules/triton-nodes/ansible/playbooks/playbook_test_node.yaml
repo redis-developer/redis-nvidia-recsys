@@ -1,0 +1,108 @@
+---
+
+- hosts: all
+  become: yes
+  become_user: root
+  become_method: sudo
+  gather_facts: yes
+
+  vars:
+    deb_packages:
+      - build-essential
+      - autoconf
+      - automake
+      - libbsd-dev
+      - libltdl-dev
+      - libltdl7
+      - libtool
+      - libpcre3-dev
+      - libevent-dev
+      - pkg-config
+      - zlib1g-dev
+      - libssl-dev
+      - nginx
+
+  handlers:
+    - name: restart_nginx
+      service:
+        name: nginx
+        state: restarted
+
+
+  pre_tasks:
+    - name: Update Apt Cache
+      apt: update_cache=yes
+      when: ansible_os_family == "Debian"
+    - name: Ubuntu Packages
+      package:
+        name: "{{ deb_packages }}"
+    - name: Set to Realistic Hostname
+      hostname:
+        name: "tester"
+    - name: Setup Hostsfile
+      lineinfile:
+        dest: /etc/hosts
+        regexp: '^127\.0\.0\.1[ \t]+localhost'
+        line: "127.0.0.1 localhost tester"
+        state: present
+
+  tasks:
+    - name: load vars
+      include_vars: default.yaml
+    - name: create redis user
+      user:
+        name: redis
+        uid: 4001
+        shell: /bin/bash
+        state: present
+
+    - name: checkout redis git repo
+      git:
+        repo: 'https://github.com/antirez/redis'
+        dest: /home/redis/redis
+
+    - name: redis - Build the default target
+      make:
+        chdir: /home/redis/redis
+
+    - name: redis - Run 'install' target as root
+      make:
+        chdir: /home/redis/redis
+        target: install
+      become: yes
+
+    - name: checkout memtier_benchmark git repo
+      git:
+        repo: 'https://github.com/RedisLabs/memtier_benchmark'
+        dest: /home/redis/memtier_benchmark
+
+    - name: memtier - Run the autoconf
+      command: autoreconf -ivf
+      args:
+        chdir: /home/redis/memtier_benchmark
+        creates: /home/redis/memtier_benchmark/configure
+
+    - name: memtier - Run the configure script first
+      command: ./configure
+      args:
+        chdir: /home/redis/memtier_benchmark
+        creates: /home/redis/memtier_benchmark/Makefile
+
+    - name: memtier - Build the default target
+      make:
+        chdir: /home/redis/memtier_benchmark
+
+    - name: Run 'memtier_benchmark install' target as root
+      make:
+        chdir: /home/redis/memtier_benchmark
+        target: install
+      become: yes
+
+  post_tasks:
+    - name: create the redis dir
+      file:
+        path: /redis
+        owner: redis
+        group: redis
+        mode: '0755'
+        state: directory

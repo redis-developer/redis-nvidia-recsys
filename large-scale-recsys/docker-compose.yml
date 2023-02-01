@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   merlin:
-    image: "nvcr.io/nvidia/merlin/merlin-hugectr:22.10"
+    image: "nvcr.io/nvidia/merlin/merlin-hugectr:22.12"
     privileged: true
     command: ["jupyter", "lab", "--no-browser", "--allow-root", "--ip", "0.0.0.0", "--port", "8888"]
     ports:
