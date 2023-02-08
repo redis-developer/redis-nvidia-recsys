@@ -1,0 +1,49 @@
+name: "2-redis-vss-candidates"
+backend: "python"
+dynamic_batching {}
+response_cache {
+  enable: True
+}
+instance_group [{ kind: KIND_CPU, count: 4 }]
+input {
+  name: "output_1"
+  data_type: TYPE_FP32
+  dims: -1
+  dims: 64
+}
+output {
+  name: "item_category"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "item_shop"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "item_brand"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "item_id_raw"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "item_id"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+parameters {
+  key: "vector_db_config"
+  value {
+    string_value: "{\"index_name\": \"candidate_index_2\", \"vector_field_name\": \"item_embedding\", \"topk\": \"64\"}"
+  }
+}

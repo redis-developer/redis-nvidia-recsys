@@ -1,0 +1,94 @@
+name: "1-user-embeddings"
+platform: "tensorflow_savedmodel"
+backend: "tensorflow"
+dynamic_batching {}
+input {
+  name: "user_age"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "user_brands"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "user_categories"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "user_consumption_2"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "user_gender"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "user_geography"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "user_group"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "user_id"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "user_intentions"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "user_is_occupied"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "user_profile"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "user_shops"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "output_1"
+  data_type: TYPE_FP32
+  dims: -1
+  dims: 64
+}
+parameters {
+  key: "TF_GRAPH_TAG"
+  value {
+    string_value: "serve"
+  }
+}
+parameters {
+  key: "TF_SIGNATURE_DEF"
+  value {
+    string_value: "serving_default"
+  }
+}

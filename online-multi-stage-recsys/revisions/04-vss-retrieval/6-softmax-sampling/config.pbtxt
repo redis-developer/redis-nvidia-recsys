@@ -1,0 +1,28 @@
+name: "6-softmax-sampling"
+backend: "python"
+dynamic_batching {}
+instance_group [{ kind: KIND_CPU }]
+input {
+  name: "item_id_raw"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: 1
+}
+input {
+  name: "click/binary_classification_task"
+  data_type: TYPE_FP32
+  dims: -1
+  dims: 1
+}
+output {
+  name: "ordered_ids"
+  data_type: TYPE_INT32
+  dims: -1
+  dims: -1
+}
+parameters {
+  key: "softmax_config"
+  value {
+    string_value: "{\"topk\": \"16\"}"
+  }
+}
