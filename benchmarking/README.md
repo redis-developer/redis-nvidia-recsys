@@ -17,7 +17,7 @@ The benchmarking setup can largely be deployed with the terraform/ansible script
 
 The setup is depicted below.
 
-![](../assets/benchmarking-setup.png)
+![](https://user-images.githubusercontent.com/13009163/219516879-41361387-16bc-4b1d-b273-e8a30b521b88.png)
 
 The benchmarking setup consists of the following components:
 1. Redis Enterprise Software (RES) - The feature store and vector index
@@ -178,4 +178,16 @@ The following table shows the results of the benchmarking runs across revisions.
 > NOTE: The last stage results represent ONLY duplicate requests to show the importance of the inference cache. The throughput of the final revision is the same as the throughput of the previous revision for non-duplicate requests.
 
 
+<div class="row">
+  <div class="column">
+   <img width="800" alt="image" src="https://user-images.githubusercontent.com/13009163/219517050-2c7b4ea3-f956-44bc-a95d-145fa53bf117.png">
+  </div>
+  <div class="column">
+    <img width="800" alt="image" src="https://user-images.githubusercontent.com/13009163/219516938-af6ce99f-5aaf-408b-bcf5-ca6ccd2ebc0b.png">
+  </div>
+  <div class="column">
+    <img width="800" alt="image" src="https://user-images.githubusercontent.com/13009163/219516979-785d4ffd-1ee1-42e8-9bc2-8518cec2ecf0.png">
+  </div>
+</div>
+ 
 
