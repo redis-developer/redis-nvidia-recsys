@@ -49,7 +49,7 @@ An "online" recommendation system generates recommendations on-demand. As oppose
 The previous example for batch recommendations generates the models and datasets for this notebook, but you can also just download pre-trained assets with the AWS CLI as follows
 
 ```
-aws s3 cp s3://redisventures/merlin/merlin-recsys-data.zip ./data
+aws s3 cp s3://redis-merlin/data .
 ```
 
 To execute the notebook, run the following
@@ -107,14 +107,14 @@ the Recommendation System pipelines detailed here. See the README within the
 The models in this tutorial can be retrieved with the aws cli by running
 
 ```
-aws s3 cp s3://redisventures/merlin/merlin-recsys-data.zip ./data
+aws s3 cp s3://redis-merlin/data .
 ```
 
 ### Repositories
 
 The following repostories link to code/assets used in articles and notebooks
 
-- [Redis Ventures](https://github.com/RedisVentures)
+- [Redis Developer](https://github.com/redis-developer)
 - [Feast GitHub](https://github.com/feast-dev/feast)
 - [NVTabular](https://github.com/NVIDIA-Merlin/NVTabular)
 - [HugeCTR](https://github.com/NVIDIA-Merlin/HugeCTR)

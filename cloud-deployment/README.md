@@ -126,15 +126,14 @@ RecSys workflows. This will eventually be more automated by ansible.
 ```bash
 # ssh to the GPU instance (put in triton-node-eips) and clone this repo
 ssh -i my-aws-ssh-key.pem ubuntu@12.345.67.89
-git clone https://github.com/RedisVentures/Redis-Recsys.git
+git clone https://github.com/redis-developer/redis-nvidia-recsys.git
 
 # install aws-cli to pull reference data
 sudo apt install aws-cli
 aws configure # and follow the steps you did before
 
 cd Redis-Recsys
-aws s3 cp s3://redisventures/merlin/merlin-recsys-data.zip .
-unzip merlin-recsys-data.zip
+aws s3 cp s3://redis-merlin/data .
 # you should have a /data folder in the Redis-Recsys folder now
 ```
 
